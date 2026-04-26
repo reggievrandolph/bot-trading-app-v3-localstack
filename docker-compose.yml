@@ -38,6 +38,26 @@ services:
     profiles:
       - simulated
 
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.api
+    ports:
+      - "5001:5000"
+    environment:
+      - AWS_ENDPOINT_URL=http://localhost:4566
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+      - CS_APP_KEY=${CS_APP_KEY}
+      - CS_APP_SECRET=${CS_APP_SECRET}
+      - CS_CALLBACK_URL=${CS_CALLBACK_URL:-http://localhost:3000/callback}
+      - CS_TOKENS_FILE=/app/tokens.json
+    volumes:
+      - ./backend/tokens.json:/app/tokens.json:ro
+    depends_on:
+      - redis
+
   ui-api:
     build:
       context: ./backend
@@ -49,6 +69,7 @@ services:
       - REDIS_URL=redis://redis:6379
     depends_on:
       - redis
+      - api-gateway
 
   strategy:
     build:
@@ -98,9 +119,9 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=http://localhost:5001
     depends_on:
-      - ui-api
+      - api-gateway
 
   account:
     build:

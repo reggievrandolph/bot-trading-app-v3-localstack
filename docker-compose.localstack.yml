@@ -24,10 +24,14 @@ services:
       context: ./backend
       dockerfile: lambda/Dockerfile.trading
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL=http://host.docker.internal:4566
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+      - CS_APP_KEY=12345678901234567890123456789012
+      - CS_APP_SECRET=12345678901234567890123456789012
+      - CS_CALLBACK_URL=http://localhost:3000/callback
+      - CS_TOKENS_FILE=/tmp/tokens.json
     depends_on:
       - localstack
     networks:
@@ -38,10 +42,14 @@ services:
       context: ./backend
       dockerfile: lambda/Dockerfile.data
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL=http://host.docker.internal:4566
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+      - CS_APP_KEY=12345678901234567890123456789012
+      - CS_APP_SECRET=12345678901234567890123456789012
+      - CS_CALLBACK_URL=http://localhost:3000/callback
+      - CS_TOKENS_FILE=/tmp/tokens.json
     depends_on:
       - localstack
     networks:
@@ -52,10 +60,14 @@ services:
       context: ./backend
       dockerfile: lambda/Dockerfile.order
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL=http://host.docker.internal:4566
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+      - CS_APP_KEY=12345678901234567890123456789012
+      - CS_APP_SECRET=12345678901234567890123456789012
+      - CS_CALLBACK_URL=http://localhost:3000/callback
+      - CS_TOKENS_FILE=/tmp/tokens.json
     depends_on:
       - localstack
     networks:
@@ -66,10 +78,14 @@ services:
       context: ./backend
       dockerfile: lambda/Dockerfile.circuit
     environment:
-      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ENDPOINT_URL=http://host.docker.internal:4566
       - AWS_REGION=us-east-1
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
+      - CS_APP_KEY=12345678901234567890123456789012
+      - CS_APP_SECRET=12345678901234567890123456789012
+      - CS_CALLBACK_URL=http://localhost:3000/callback
+      - CS_TOKENS_FILE=/tmp/tokens.json
     depends_on:
       - localstack
     networks:
