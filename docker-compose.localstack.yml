@@ -1,0 +1,73 @@
+version: '3.8'
+services:
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4567:4566"
+    environment:
+      - SERVICES=sns,sqs,dynamodb,secretsmanager,cloudwatch,lambda
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - LAMBDA_EXECUTOR=docker-reuse
+      - LAMBDA_DOCKER_NETWORK=bot-trading-app-v3_default
+      - LAMBDA_REMOTE_DOCKER=false
+    volumes:
+      - "./tmp/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./backend/lambda:/opt/code/localstack"
+      - "./backend:/opt/code/shared"
+    networks:
+      - bot-trading-app-v3_default
+
+  # Lambda functions for local testing
+  trading-service:
+    build: 
+      context: ./backend
+      dockerfile: lambda/Dockerfile.trading
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_REGION=us-east-1
+    depends_on:
+      - localstack
+    networks:
+      - bot-trading-app-v3_default
+
+  data-service:
+    build: 
+      context: ./backend
+      dockerfile: lambda/Dockerfile.data
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_REGION=us-east-1
+    depends_on:
+      - localstack
+    networks:
+      - bot-trading-app-v3_default
+
+  order-service:
+    build: 
+      context: ./backend
+      dockerfile: lambda/Dockerfile.order
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_REGION=us-east-1
+    depends_on:
+      - localstack
+    networks:
+      - bot-trading-app-v3_default
+
+  circuit-breaker:
+    build: 
+      context: ./backend
+      dockerfile: lambda/Dockerfile.circuit
+    environment:
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_REGION=us-east-1
+    depends_on:
+      - localstack
+    networks:
+      - bot-trading-app-v3_default
+
+networks:
+  bot-trading-app-v3_default:
+    driver: bridge

@@ -1,0 +1,24 @@
+FROM python:3.11
+
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install boto3
+
+# Copy Lambda function and shared code
+COPY lambda/circuit_breaker.py .
+COPY clients ./clients/
+COPY events ./events/
+COPY utils ./utils/
+COPY aws_messaging.py .
+COPY config.py .
+
+# Set environment variables for LocalStack
+ENV AWS_ENDPOINT_URL=http://localhost:4566
+ENV AWS_REGION=us-east-1
+
+EXPOSE 8080
+
+CMD ["python", "circuit_breaker.py"]

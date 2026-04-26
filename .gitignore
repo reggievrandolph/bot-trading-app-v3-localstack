@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+*.pyo
+.venv
+.env
+tokens.json
+backend/working_order.json
