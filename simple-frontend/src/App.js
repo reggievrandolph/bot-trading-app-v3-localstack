@@ -110,97 +110,99 @@ function App() {
       </header>
 
       <main className="dashboard">
-        <div className="card">
-          <h2>📊 Market Data</h2>
-          {tradingData ? (
-            <div className="data-grid">
-              <div className="data-item">
-                <span className="label">Symbol:</span>
-                <span className="value">{tradingData.symbol}</span>
+        <div className="row">
+          <div className="card">
+            <h2>⚡ Connection Status</h2>
+            <div className="services">
+              <div
+                className={`service-item ${isConnected ? "active" : "inactive"}`}
+              >
+                {isConnected ? "✅ API Connected" : "❌ API Disconnected"}
               </div>
-              <div className="data-item">
-                <span className="label">Price:</span>
-                <span className="value">${tradingData.price}</span>
-              </div>
-              <div className="data-item">
-                <span className="label">Time:</span>
-                <span className="value">
-                  {new Date(
-                    parseInt(tradingData.timestamp),
-                  ).toLocaleTimeString()}
-                </span>
-              </div>
-              <div className="data-item">
-                <span className="label">Volume:</span>
-                <span className="value">
-                  {tradingData.volume?.toLocaleString() || "N/A"}
-                </span>
-              </div>
-              <div className="data-item">
-                <span className="label">Change:</span>
-                <span className="value">{tradingData.change || "N/A"}</span>
-              </div>
+              <div className="service-item active">✅ Data Service</div>
+              <div className="service-item active">✅ Trading Service</div>
+              <div className="service-item active">✅ Order Service</div>
             </div>
-          ) : (
-            <div className="loading">Loading market data...</div>
-          )}
-        </div>
+          </div>
 
-        <div className="card">
-          <h2>💼 Current Positions</h2>
-          <div className="positions">
-            {Object.keys(positions).length > 0 ? (
-              Object.entries(positions).map(([symbol, quantity]) => (
-                <div key={symbol} className="position-item">
-                  <span className="symbol">{symbol}:</span>
-                  <span className="quantity">{quantity} shares</span>
+          <div className="card">
+            <h2>📊 Market Data</h2>
+            {tradingData ? (
+              <div className="data-grid">
+                <div className="data-item">
+                  <span className="label">Symbol:</span>
+                  <span className="value">{tradingData.symbol}</span>
                 </div>
-              ))
+                <div className="data-item">
+                  <span className="label">Price:</span>
+                  <span className="value">${tradingData.price}</span>
+                </div>
+                <div className="data-item">
+                  <span className="label">Time:</span>
+                  <span className="value">
+                    {new Date(
+                      parseInt(tradingData.timestamp),
+                    ).toLocaleTimeString()}
+                  </span>
+                </div>
+                <div className="data-item">
+                  <span className="label">Volume:</span>
+                  <span className="value">
+                    {tradingData.volume?.toLocaleString() || "N/A"}
+                  </span>
+                </div>
+                <div className="data-item">
+                  <span className="label">Change:</span>
+                  <span className="value">{tradingData.change || "N/A"}</span>
+                </div>
+              </div>
             ) : (
-              <div className="loading">No positions found</div>
+              <div className="loading">Loading market data...</div>
             )}
           </div>
-        </div>
 
-        <div className="card">
-          <h2>🏦 Account Information</h2>
-          {accountData ? (
-            <div className="data-grid">
-              <div className="data-item">
-                <span className="label">Cash Balance:</span>
-                <span className="value">
-                  ${accountData.cash_balance?.toLocaleString() || "0"}
-                </span>
-              </div>
-              <div className="data-item">
-                <span className="label">Available Funds:</span>
-                <span className="value">
-                  ${accountData.available_funds?.toLocaleString() || "0"}
-                </span>
-              </div>
-              <div className="data-item">
-                <span className="label">Buying Power:</span>
-                <span className="value">
-                  ${accountData.buying_power?.toLocaleString() || "0"}
-                </span>
-              </div>
+          <div className="card">
+            <h2>💼 Current Positions</h2>
+            <div className="positions">
+              {Object.keys(positions).length > 0 ? (
+                Object.entries(positions).map(([symbol, quantity]) => (
+                  <div key={symbol} className="position-item">
+                    <span className="symbol">{symbol}:</span>
+                    <span className="quantity">{quantity} shares</span>
+                  </div>
+                ))
+              ) : (
+                <div className="loading">No positions found</div>
+              )}
             </div>
-          ) : (
-            <div className="loading">Loading account data...</div>
-          )}
-        </div>
+          </div>
 
-        <div className="card">
-          <h2>⚡ Connection Status</h2>
-          <div className="services">
-            <div
-              className={`service-item ${isConnected ? "active" : "inactive"}`}
-            >
-              {isConnected ? "✅ API Connected" : "❌ API Disconnected"}
-            </div>
-            <div className="service-item active">✅ Data Service</div>
-            <div className="service-item active">✅ Trading Service</div>
-            <div className="service-item active">✅ Order Service</div>
+          <div className="card">
+            <h2>🏦 Account Information</h2>
+            {accountData ? (
+              <div className="data-grid">
+                <div className="data-item">
+                  <span className="label">Cash Balance:</span>
+                  <span className="value">
+                    ${accountData.cash_balance?.toLocaleString() || "0"}
+                  </span>
+                </div>
+                <div className="data-item">
+                  <span className="label">Available Funds:</span>
+                  <span className="value">
+                    ${accountData.available_funds?.toLocaleString() || "0"}
+                  </span>
+                </div>
+                <div className="data-item">
+                  <span className="label">Buying Power:</span>
+                  <span className="value">
+                    ${accountData.buying_power?.toLocaleString() || "0"}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="loading">Loading account data...</div>
+            )}
           </div>
         </div>
       </main>

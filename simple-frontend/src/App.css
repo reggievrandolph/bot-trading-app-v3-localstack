@@ -3,6 +3,9 @@
   background-color: #282c34;
   min-height: 100vh;
   color: white;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 .App-header {
@@ -40,19 +43,34 @@
 
 .dashboard {
   padding: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 20px;
-  max-width: 1200px;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 0.8fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+  width: 100%;
+  min-height: 300px;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .card {
   background-color: #1a1d23;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
   border: 1px solid #3a3d45;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .card h2 {
@@ -131,10 +149,38 @@
 
 @media (max-width: 768px) {
   .dashboard {
+    flex-direction: column;
+  }
+  
+  .row {
     grid-template-columns: 1fr;
   }
   
   .data-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1000px) {
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 1300px) {
+  .row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 1800px) {
+  .row {
+    grid-template-columns: 0.8fr 1.2fr 0.8fr 1fr;
   }
 }
