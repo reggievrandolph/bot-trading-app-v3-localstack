@@ -20,7 +20,38 @@ A modern, serverless trading bot built with LocalStack for local development and
 
 ## Quick Start
 
-### Local Development with LocalStack
+Choose **one** of the following methods to run the trading bot:
+
+### 🚀 Method 1: Make Commands (Recommended)
+
+**Simulated Trading (Safe for testing):**
+```bash
+make simulated
+```
+- Uses simulated market data
+- Opens frontend at http://localhost:3000
+- Safe for testing without real money
+
+**Live Trading (Real market data):**
+```bash
+make live
+```
+- Uses real market data and live trading
+- Requires API credentials in `.env` file
+- Opens frontend at http://localhost:3000
+
+**Custom Ticker:**
+```bash
+TICKER=AAPL make simulated  # Test with AAPL
+TICKER=TSLA make live      # Live trade TSLA
+```
+
+**Stop Services:**
+```bash
+make stop
+```
+
+### 🐳 Method 2: LocalStack Development
 
 1. **Start LocalStack**
 ```bash
@@ -36,9 +67,46 @@ docker-compose -f docker-compose.localstack.yml logs -f order-service
 docker-compose -f docker-compose.localstack.yml logs -f circuit-breaker
 ```
 
-3. **Run Tests**
+3. **Access Services**
+- LocalStack UI: http://localhost:8080
+- LocalStack API: http://localhost:4566
+
+4. **Run Tests**
 ```bash
 ./scripts/test.sh
+```
+
+### 🎯 Frontend Options
+
+**Option A: Simple Frontend (Working)**
+```bash
+cd simple-frontend
+npm start
+# Opens at http://localhost:3000
+```
+
+**Option B: Original Frontend (Advanced)**
+```bash
+# Requires fixing react-scripts issues
+cd frontend
+npm install --legacy-peer-deps
+npm start
+```
+
+### ⚙️ Configuration
+
+1. **Set up API Credentials**
+```bash
+cp .env.template .env
+# Edit .env with your actual trading API credentials
+```
+
+2. **Required Environment Variables**
+```bash
+CS_APP_KEY=your_app_key_here
+CS_APP_SECRET=your_app_secret_here
+CS_CALLBACK_URL=http://localhost:3000/callback
+CS_TOKENS_FILE=./tokens.json
 ```
 
 ### AWS Deployment (When Ready)
@@ -96,7 +164,11 @@ aws logs tail /aws/lambda/trading-service --follow
 ```
 bot-trading-app-v3-localstack/
 ├── README.md
+├── Makefile                         # Build and run commands
+├── docker-compose.yml               # Main compose for make commands
 ├── docker-compose.localstack.yml    # LocalStack development
+├── .env.template                    # Environment variables template
+├── .gitignore                       # Git ignore rules
 ├── backend/
 │   ├── requirements.txt
 │   ├── config.py
@@ -114,7 +186,11 @@ bot-trading-app-v3-localstack/
 │   ├── bin/trading-bot.ts
 │   ├── lib/trading-stack.ts
 │   └── package.json
-├── frontend/                        # React frontend
+├── frontend/                        # Original React frontend
+├── simple-frontend/                 # Working React dashboard
+│   ├── package.json
+│   ├── public/
+│   └── src/
 ├── scripts/
 │   ├── setup.sh                     # LocalStack setup
 │   ├── test.sh                      # Run tests
@@ -175,6 +251,37 @@ This v3 architecture provides:
 
 ## Troubleshooting
 
+### Frontend Issues
+
+**Simple Frontend Not Starting:**
+```bash
+cd simple-frontend
+rm -rf node_modules package-lock.json
+npm install
+npm start
+```
+
+**Original Frontend React-Scripts Error:**
+```bash
+cd frontend
+rm -rf node_modules package-lock.json
+npm install react-scripts@5.0.1 --save-dev
+npm install --legacy-peer-deps
+npm start
+```
+
+**Make Commands Not Working:**
+```bash
+# Check if docker-compose.yml exists
+ls -la docker-compose.yml
+
+# Rebuild services
+docker-compose build --no-cache
+
+# Check service logs
+docker-compose logs
+```
+
 ### LocalStack Issues
 ```bash
 # Restart LocalStack
@@ -185,6 +292,9 @@ docker-compose -f docker-compose.localstack.yml logs localstack
 
 # Clean LocalStack data
 docker-compose -f docker-compose.localstack.yml down -v
+
+# Test LocalStack connectivity
+curl http://localhost:4566/_localstack/health
 ```
 
 ### AWS Deployment Issues
@@ -200,13 +310,47 @@ cdk deploy TradingBotStack --logs
 cdk destroy TradingBotStack
 ```
 
+### Common Issues
+
+**"no configuration file provided" Error:**
+```bash
+# Ensure docker-compose.yml exists for make commands
+make simulated  # Should work after creating docker-compose.yml
+```
+
+**"Unable to locate credentials" Error:**
+```bash
+# Set up AWS credentials for LocalStack
+export AWS_ACCESS_KEY_ID=test
+export AWS_SECRET_ACCESS_KEY=test
+export AWS_DEFAULT_REGION=us-east-1
+```
+
+**Port Already in Use:**
+```bash
+# Check what's using port 3000
+lsof -ti:3000
+# Kill the process
+kill -9 $(lsof -ti:3000)
+```
+
 ## Next Steps
 
-1. **Complete LocalStack Setup**: Run `./scripts/setup.sh`
-2. **Test Lambda Functions**: Verify all 4 services work locally
-3. **Run Comprehensive Tests**: `./scripts/test.sh`
-4. **Deploy to AWS**: `./scripts/deploy.sh` when ready
-5. **Monitor Production**: Set up CloudWatch alerts
+### For Immediate Use
+1. **Start Trading Bot**: Run `make simulated` for safe testing
+2. **Set up API Credentials**: Copy `.env.template` to `.env` and add your credentials
+3. **Access Frontend**: Open http://localhost:3000 to view the dashboard
+4. **Monitor Services**: Check logs with `docker-compose logs -f`
+
+### For Development
+1. **Test LocalStack**: Run `./scripts/setup.sh` for AWS emulation
+2. **Run Tests**: Execute `./scripts/test.sh` for comprehensive testing
+3. **Customize Strategies**: Modify trading algorithms in `backend/lambda/`
+
+### For Production
+1. **Deploy to AWS**: Run `./scripts/deploy.sh` when ready for cloud deployment
+2. **Set up Monitoring**: Configure CloudWatch alerts
+3. **Configure Trading**: Add real API credentials for live trading
 
 ## Support
 
