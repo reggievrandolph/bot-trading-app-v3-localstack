@@ -76,22 +76,19 @@ docker-compose -f docker-compose.localstack.yml logs -f circuit-breaker
 ./scripts/test.sh
 ```
 
-### 🎯 Frontend Options
+### 🎯 Frontend (One Working Option)
 
-**Option A: Simple Frontend (Working)**
+**Simple Frontend (Recommended)**
 ```bash
 cd simple-frontend
 npm start
 # Opens at http://localhost:3000
 ```
 
-**Option B: Original Frontend (Advanced)**
-```bash
-# Requires fixing react-scripts issues
-cd frontend
-npm install --legacy-peer-deps
-npm start
-```
+**Why we have simple-frontend:**
+The original `frontend/` directory has react-scripts compatibility issues that prevent it from starting. `simple-frontend/` was created as a working replacement with a clean, functional trading dashboard.
+
+**Note**: The original `frontend/` directory can be removed once you confirm the simple-frontend meets your needs.
 
 ### ⚙️ Configuration
 
@@ -186,8 +183,7 @@ bot-trading-app-v3-localstack/
 │   ├── bin/trading-bot.ts
 │   ├── lib/trading-stack.ts
 │   └── package.json
-├── frontend/                        # Original React frontend
-├── simple-frontend/                 # Working React dashboard
+├── simple-frontend/                 # React dashboard (working)
 │   ├── package.json
 │   ├── public/
 │   └── src/

@@ -17,6 +17,9 @@ services:
       - MODE=${MODE:-simulated}
       - TICKER=${TICKER:-SPY}
       - REDIS_URL=redis://redis:6379
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - redis
     profiles:
@@ -55,6 +58,9 @@ services:
       - MODE=${MODE:-simulated}
       - TICKER=${TICKER:-SPY}
       - REDIS_URL=redis://redis:6379
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - redis
       - ui-api
@@ -67,6 +73,9 @@ services:
       - MODE=${MODE:-simulated}
       - TICKER=${TICKER:-SPY}
       - REDIS_URL=redis://redis:6379
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
     depends_on:
       - redis
       - strategy
@@ -84,7 +93,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./simple-frontend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
