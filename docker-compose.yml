@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  data_ingestion:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.data
+    environment:
+      - MODE=${MODE:-simulated}
+      - TICKER=${TICKER:-SPY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    profiles:
+      - live
+
+  simulated_data_ingestion:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.data
+    environment:
+      - MODE=simulated
+      - TICKER=${TICKER:-SPY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    profiles:
+      - simulated
+
+  ui-api:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.trading
+    ports:
+      - "8000:8000"
+    environment:
+      - MODE=${MODE:-simulated}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+  strategy:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.trading
+    environment:
+      - MODE=${MODE:-simulated}
+      - TICKER=${TICKER:-SPY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - ui-api
+
+  trader_bot:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.order
+    environment:
+      - MODE=${MODE:-simulated}
+      - TICKER=${TICKER:-SPY}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - strategy
+
+  order_management:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.circuit
+    environment:
+      - MODE=${MODE:-simulated}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - trader_bot
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+    depends_on:
+      - ui-api
+
+  account:
+    build:
+      context: ./backend
+      dockerfile: lambda/Dockerfile.data
+    environment:
+      - MODE=${MODE:-simulated}
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+
+volumes:
+  redis_data:
